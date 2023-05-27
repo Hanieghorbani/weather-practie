@@ -1,29 +1,28 @@
 const citis = document.querySelector(".citis")
-
-const weather = {}
 const kelvin = 273
 const key = "615a54f7c5323eb352ecd9bb395b69a6"
 
-function getWeather() {
-  let api = `http://api.openweathermap.org/data/2.5/weather?q=Yazd&appid=${key}`
+function getWeather(city) {
+  let api = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}`
 
-  const request = new XMLHttpRequest()
-  request.open("GET", api)
-  request.send()
-
-  request.addEventListener("load", () => {
-    const data = JSON.parse(request.responseText)
-    weather.tempreture = Math.floor(data.main.temp - kelvin)
-    weather.iconId = data.weather[0].icon
-    weather.city = data.name
-    weather.country = data.sys.country
-
-    displayWeather()
-  })
+  fetch(api)
+    .then((response) => {
+      return response.json()
+    })
+    .then((data) => {
+      displayWeather(data)
+    })
 }
 
-function displayWeather() {
-  let teplate = `<div class="container">
+let teplate = ``
+function displayWeather(data) {
+  const weather = {}
+  weather.tempreture = Math.floor(data.main.temp - kelvin)
+  weather.iconId = data.weather[0].icon
+  weather.city = data.name
+  weather.country = data.sys.country
+
+  teplate = `<div class="container">
 <div class="app-title">
   <p>Weather</p>
 </div>
@@ -40,7 +39,7 @@ function displayWeather() {
 </div>
 </div>`
 
-  citis.innerHTML = teplate
+  citis.insertAdjacentHTML("beforeend", teplate)
 }
 
-getWeather()
+getWeather("Tehran")
